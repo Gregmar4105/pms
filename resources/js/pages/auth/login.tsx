@@ -10,7 +10,6 @@ import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { useMemo } from 'react';
 
 interface LoginProps {
     status?: string;
@@ -19,18 +18,6 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
 
-    const registerLink = useMemo(() => {
-        if (typeof window === 'undefined') {
-        // Return a default link if rendering on the server (SSR)
-        return "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
-        }
-        const baseURL = "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
-        // Get the full current URL and URI-encode it to be safe in the URL parameter
-        const referrer = encodeURIComponent(window.location.href);
-        
-        // Append the referrer as a query parameter
-        return `${baseURL}?ref=${referrer}`;
-    }, []);
 
     return (
         <AuthLayout
@@ -112,7 +99,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                         <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}
-                            <TextLink href={registerLink} target="_blank">
+                            <TextLink href={register()} target="_blank">
                                 Sign up
                             </TextLink>
                         </div>

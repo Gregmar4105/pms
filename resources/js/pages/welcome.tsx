@@ -2,23 +2,10 @@ import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { can } from '@/lib/can';
-import { useMemo } from 'react';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
 
-    const registerLink = useMemo(() => {
-            if (typeof window === 'undefined') {
-            // Return a default link if rendering on the server (SSR)
-            return "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
-            }
-            const baseURL = "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
-            // Get the full current URL and URI-encode it to be safe in the URL parameter
-            const referrer = encodeURIComponent(window.location.href);
-            
-            // Append the referrer as a query parameter
-            return `${baseURL}?ref=${referrer}`;
-        }, []);
 
     return (
         <>
@@ -48,7 +35,7 @@ export default function Welcome() {
                                     Log in
                                 </Link>
                                 <Link
-                                    href={registerLink}
+                                    href={register()}
                                     className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
                                     Register
