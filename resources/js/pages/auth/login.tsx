@@ -22,9 +22,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     const registerLink = useMemo(() => {
         if (typeof window === 'undefined') {
         // Return a default link if rendering on the server (SSR)
-        return "https://pms.larable.dev/register?ref=https%3A%2F%2Fpms.larable.dev%2Flogin";
+        return "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
         }
-        const baseURL = "https://pms.larable.dev/register?ref=https%3A%2F%2Fpms.larable.dev%2Flogin";
+        const baseURL = "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
         // Get the full current URL and URI-encode it to be safe in the URL parameter
         const referrer = encodeURIComponent(window.location.href);
         
@@ -112,13 +112,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                         <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}
-                            <a
-                                href={registerLink} // Use the generated link
-                                target="_blank"
-                                className="underline underline-offset-4 dark:text-[#FFFFFF]"
-                            >
+                            <TextLink href={registerLink} target="_blank">
                                 Sign up
-                            </a>
+                            </TextLink>
                         </div>
                     </>
                 )}

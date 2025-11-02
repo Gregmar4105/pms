@@ -10,9 +10,9 @@ export default function Welcome() {
     const registerLink = useMemo(() => {
             if (typeof window === 'undefined') {
             // Return a default link if rendering on the server (SSR)
-            return "https://pms.larable.dev/register?ref=https%3A%2F%2Fpms.larable.dev%2Flogin";
+            return "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
             }
-            const baseURL = "https://pms.larable.dev/register?ref=https%3A%2F%2Fpms.larable.dev%2Flogin";
+            const baseURL = "https://pms.larable.dev/register?ref=https%3A%2F%2Ffis.larable.dev%2Flogin";
             // Get the full current URL and URI-encode it to be safe in the URL parameter
             const referrer = encodeURIComponent(window.location.href);
             
@@ -47,15 +47,12 @@ export default function Welcome() {
                                 >
                                     Log in
                                 </Link>
-                                <div className="text-center text-sm text-muted-foreground">
-                                    <a
-                                        href={registerLink} // Use the generated link
-                                        target="_blank"
-                                        className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                                    >
-                                        Register
-                                    </a>
-                                </div>
+                                <Link
+                                    href={registerLink}
+                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                                >
+                                    Register
+                                </Link>
                             </>
                         )}
                     </nav>
