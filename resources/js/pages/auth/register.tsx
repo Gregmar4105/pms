@@ -2,6 +2,7 @@ import RegisteredUserController from '@/actions/App/Http/Controllers/Auth/Regist
 import { login } from '@/routes';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
+import { useMemo } from 'react'; // 👈 Import useMemo
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -11,6 +12,42 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 export default function Register() {
+
+    // Logic to determine if the "Already have an account?" link should be displayed
+    const shouldShowLoginLink = useMemo(() => {
+        if (typeof window === 'undefined') {
+            // Default to showing the link during Server-Side Rendering (SSR)
+            return true;
+        }
+
+        try {
+            // 1. Get the 'ref' query parameter from the CURRENT URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentRefParam = urlParams.get('ref');
+
+            // 2. If there is NO 'ref' parameter, we should show the link
+            if (!currentRefParam) {
+                return true;
+            }
+            
+            // 3. Decode the 'ref' parameter to get the actual referrer URL
+            const decodedReferrer = decodeURIComponent(currentRefParam);
+
+            // 4. Check if the decoded referrer is complex (i.e., contains a query string '?')
+            // A complex referrer suggests this registration flow is part of a redirected path.
+            const isComplexReferrer = decodedReferrer.includes('?');
+
+            // We hide the login link if a complex referrer is present.
+            // Therefore, we show the link only if the referrer is NOT complex.
+            return !isComplexReferrer;
+
+        } catch (e) {
+            console.error("Error parsing URL for login link decision:", e);
+            // Default to showing on error
+            return true;
+        }
+    }, []);
+
     return (
         <AuthLayout
             title="Create an account"
@@ -25,7 +62,10 @@ export default function Register() {
             >
                 {({ processing, errors }) => (
                     <>
+                        {/* ... (Your form inputs remain here) ... */}
+
                         <div className="grid gap-6">
+                            {/* Name Input */}
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
@@ -44,6 +84,7 @@ export default function Register() {
                                 />
                             </div>
 
+                            {/* Email Input */}
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
@@ -58,6 +99,7 @@ export default function Register() {
                                 <InputError message={errors.email} />
                             </div>
 
+                            {/* Password Input */}
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
                                 <Input
@@ -72,6 +114,7 @@ export default function Register() {
                                 <InputError message={errors.password} />
                             </div>
 
+                            {/* Confirm Password Input */}
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
                                     Confirm password
@@ -90,6 +133,7 @@ export default function Register() {
                                 />
                             </div>
 
+                            {/* Submit Button */}
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
@@ -103,12 +147,15 @@ export default function Register() {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
-                            Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
-                                Log in
-                            </TextLink>
-                        </div>
+                        {/* 👈 CONDITIONAL RENDERING APPLIED HERE */}
+                        {shouldShowLoginLink && (
+                            <div className="text-center text-sm text-muted-foreground">
+                                Already have an account?{' '}
+                                <TextLink href={login()} tabIndex={6}>
+                                    Log in
+                                </TextLink>
+                            </div>
+                        )}
                     </>
                 )}
             </Form>
