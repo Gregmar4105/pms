@@ -2,7 +2,7 @@ import RegisteredUserController from '@/actions/App/Http/Controllers/Auth/Regist
 import { login } from '@/routes';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { useMemo } from 'react'; // 👈 Import useMemo
+import { useMemo } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -13,37 +13,55 @@ import AuthLayout from '@/layouts/auth-layout';
 
 export default function Register() {
 
-    // Logic to determine if the "Already have an account?" link should be displayed
-    const shouldShowLoginLink = useMemo(() => {
+    // --- NEW LOGIC: Extract and save the decoded referrer URL ---
+    const decodedReferrer = useMemo(() => {
         if (typeof window === 'undefined') {
-            // Default to showing the link during Server-Side Rendering (SSR)
-            return true;
+            return null; // Return null during SSR
         }
 
         try {
-            // 1. Get the 'ref' query parameter from the CURRENT URL
             const urlParams = new URLSearchParams(window.location.search);
             const currentRefParam = urlParams.get('ref');
 
-            // 2. If there is NO 'ref' parameter, we should show the link
+            // 1. If no 'ref' param, return null
+            if (!currentRefParam) {
+                return null;
+            }
+            
+            // 2. Decode the 'ref' parameter
+            return decodeURIComponent(currentRefParam);
+
+        } catch (e) {
+            console.error("Error parsing URL for referrer:", e);
+            return null; // Return null on error
+        }
+    }, []);
+    // -----------------------------------------------------------
+
+    // Logic to determine if the "Already have an account?" link should be displayed
+    const shouldShowLoginLink = useMemo(() => {
+        // We can reuse the logic, which depends on the presence and complexity of the 'ref' param.
+        // It's already correctly set up to use the 'ref' param for the logic.
+        if (typeof window === 'undefined') {
+            return true; 
+        }
+
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentRefParam = urlParams.get('ref');
+
             if (!currentRefParam) {
                 return true;
             }
             
-            // 3. Decode the 'ref' parameter to get the actual referrer URL
-            const decodedReferrer = decodeURIComponent(currentRefParam);
+            const referrer = decodeURIComponent(currentRefParam);
 
-            // 4. Check if the decoded referrer is complex (i.e., contains a query string '?')
-            // A complex referrer suggests this registration flow is part of a redirected path.
-            const isComplexReferrer = decodedReferrer.includes('?');
-
-            // We hide the login link if a complex referrer is present.
-            // Therefore, we show the link only if the referrer is NOT complex.
+            // Hide the login link if a complex referrer (contains '?') is present.
+            const isComplexReferrer = referrer.includes('?');
             return !isComplexReferrer;
 
         } catch (e) {
             console.error("Error parsing URL for login link decision:", e);
-            // Default to showing on error
             return true;
         }
     }, []);
@@ -62,8 +80,16 @@ export default function Register() {
             >
                 {({ processing, errors }) => (
                     <>
-                        {/* ... (Your form inputs remain here) ... */}
-
+                        {/* --- NEW: Hidden Input for Referral URL --- */}
+                        {decodedReferrer && (
+                            <input
+                                type="hidden"
+                                name="ref_url" // 👈 This name must match the backend validation/field
+                                value={decodedReferrer}
+                            />
+                        )}
+                        {/* ------------------------------------------ */}
+                        
                         <div className="grid gap-6">
                             {/* Name Input */}
                             <div className="grid gap-2">
@@ -147,7 +173,7 @@ export default function Register() {
                             </Button>
                         </div>
 
-                        {/* 👈 CONDITIONAL RENDERING APPLIED HERE */}
+                        {/* CONDITIONAL RENDERING APPLIED HERE */}
                         {shouldShowLoginLink && (
                             <div className="text-center text-sm text-muted-foreground">
                                 Already have an account?{' '}
