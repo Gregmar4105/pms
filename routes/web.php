@@ -8,7 +8,7 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::middleware(['auth', 'verified', 'prevent-back'])->group(function () {
+Route::middleware(['auth', 'verified', 'prevent-back' , 'permission:pms_administrator'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');   
