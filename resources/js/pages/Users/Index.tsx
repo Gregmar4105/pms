@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Head, Link } from '@inertiajs/react';
 import { Plus, Pencil, Trash, BadgeCheckIcon, BadgeAlert } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import Pagination from '@/components/Pagination';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,6 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index({ users }) {
+    console.log(users);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />
@@ -22,11 +24,11 @@ export default function Index({ users }) {
       <Link href={'users.create'} className='m-4 '><Button size="sm" className='bg-orange-400 mt-4'><Plus/>Create</Button></Link>
       </div>
       <div
-        className="m-4 bg-white border border-black 
+        className="m-4 bg-white border border-black dark:border-white
         dark:bg-primary-foreground p-4 rounded-lg"
       >
         <Table className="w-full">
-          <TableCaption>List of Users in the System.</TableCaption>
+          <TableCaption></TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
@@ -49,7 +51,7 @@ export default function Index({ users }) {
                 </TableRow>
             ) : (
                 /* Iterate over users */
-                users.map((user) => (
+                users.data.map((user) => (
                     <TableRow key={user.id}> 
                         <TableCell className="font-medium">{user.id}</TableCell>
                         <TableCell>{user.name}</TableCell>
@@ -88,6 +90,7 @@ export default function Index({ users }) {
             )}
           </TableBody>
         </Table>
+        <Pagination links={users.links} />
       </div>
     </AppLayout>
   );
