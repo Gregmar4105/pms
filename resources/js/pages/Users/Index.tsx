@@ -36,6 +36,7 @@ export default function Index({ users }) {
               <TableHead>Email</TableHead>
               <TableHead>Verification</TableHead>
               <TableHead>Origin URL</TableHead>
+              <TableHead>Account Status</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -69,6 +70,14 @@ export default function Index({ users }) {
                             </Badge> } 
                             </TableCell>
                         <TableCell>{user.origin_url}</TableCell>
+                    <TableCell>
+                                        <Badge
+                                            variant="default"
+                                            className={user.user_status === "Inactive" ? "bg-red-600 text-white" : "bg-green-500 text-white"}
+                                        >
+                                            {user.user_status}
+                                        </Badge>
+                                    </TableCell>
 
                         {/* 🎯 THE FIXED ROLE LOGIC 🎯 */}
                         <TableCell>
@@ -82,16 +91,16 @@ export default function Index({ users }) {
                         
                         <TableCell>
                             {/* Using dynamic URLs is better for Inertia routing */}
-                            <Link href={`users.edit`} data={{ user: user.id }}><Button variant='default' size="sm" className='bg-blue-700'><Pencil/></Button></Link>
-                            <Link href={`users.delete`} data={{ user: user.id }}><Button variant='default' size="sm" className='ml-2 bg-red-600'><Trash/></Button></Link>
+                            <Link href={`users.edit`} data={{ user: user.id }}><Button variant='default' size="sm" className='bg-blue-700 dark:text-white'><Pencil/></Button></Link>
+                            <Link href={`users.delete`} data={{ user: user.id }}><Button variant='default' size="sm" className='ml-2 bg-red-600 dark:text-white'><Trash/></Button></Link>
                         </TableCell> 
                     </TableRow>
                 ))
             )}
           </TableBody>
         </Table>
-        <Pagination links={users.links} />
       </div>
+    <Pagination links={users.links} />
     </AppLayout>
   );
 }

@@ -23,11 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
             'prevent-back' => \App\Http\Middleware\PreventBack::class,
-            'prevent-embedding' => \App\Http\Middleware\PreventEmbedding::class,
         ]);
 
         $middleware->web(append: [
-            \App\Http\Middleware\PreventEmbedding::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

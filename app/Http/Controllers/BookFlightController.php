@@ -2,23 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BookFlight;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Http;
-use App\Models\User;
 
-class RoleController extends Controller
+class BookFlightController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render("Roles/Index" , [
-            'roles' => Role::with("permissions")->get(),
-            'permissions' => Permission::pluck('name'),
+        // 1. Fetch data from the external n8n webhook
+        $n8n_webhook_url = env('N8N_GET_FLIGHTS_URL'); // 👈 **Replace this with your actual n8n webhook URL**
+
+        try {
+            $response = Http::get($n8n_webhook_url);
+
+            // Check if the request was successful (status code 200)
+            if ($response->successful()) {
+                // Get the JSON data as an array
+                $flights_from_n8n = $response->json();
+            } else {
+                $flights_from_n8n = [];
+            }
+
+        } catch (\Exception $e) {
+            $flights_from_n8n = [];
+        }
+
+        // 2. Return the data to the Inertia view
+        return Inertia::render('BookFlight/Index', [
+            "bookedflights" => BookFlight::all(),
+            // Pass the data fetched from the n8n webhook
+            "flights" => $flights_from_n8n,
         ]);
     }
 
@@ -27,31 +46,26 @@ class RoleController extends Controller
      */
     public function create()
     {
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'permissions' => 'required|array',
+            'request' => 'array',
         ]);
 
-        $webhookUrlRoleName = env('N8N_CREATE_ROLE_URL');
-        $webhookUrlSyncPermission = env('N8N_SYNC_PERMISSION_URL');
+        $webhookUrl = env('N8N_CREATE_FLIGHT_URL');
 
         // 1. Create role via webhook
         try {
-            $responseRole = Http::post($webhookUrlRoleName, [
-                'name' => $request->name,
-                'guard_name' => "web",
-                'created_at' => now()->toDateTimeString(),
-                'updated_at' => now()->toDateTimeString(),
+            $response = Http::post($webhookUrl, [
+                Auth::id(),
+                
+
             ]);
 
-            if (!$responseRole->successful()) {
+            if (!$response->successful()) {
                 return back()->withErrors(['webhook' => 'Role creation webhook failed.']);
             }
 
@@ -78,10 +92,11 @@ class RoleController extends Controller
         return redirect()->route('roles.index');
     }
 
+
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(BookFlight $bookFlight)
     {
         //
     }
@@ -89,7 +104,7 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(BookFlight $bookFlight)
     {
         //
     }
@@ -97,7 +112,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, BookFlight $bookFlight)
     {
         //
     }
@@ -105,7 +120,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BookFlight $bookFlight)
     {
         //
     }
