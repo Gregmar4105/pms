@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
 
         $hashedPassword = Hash::make($request->password);
 
-        $webhookUrl = env('N8N_REGISTER_UR'); 
+        $webhookUrl = env('N8N_REGISTER_URL'); 
 
         try {
             $response = Http::post($webhookUrl, [
