@@ -49,7 +49,7 @@ export default function Welcome(props: ImgHTMLAttributes<HTMLImageElement>) {
                             {auth.user ? (
                                 <Link
                                     href={dashboard()}
-                                    className="rounded-full border border-blue-600 bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-blue-700 hover:border-blue-700"
+                                    className="rounded-full border border-orange-400 bg-orange-400 px-5 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-orange-600 hover:border-orange-600"
                                 >
                                     Go to Dashboard
                                 </Link>
