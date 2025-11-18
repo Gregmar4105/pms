@@ -28,7 +28,7 @@ export default function Welcome(props: ImgHTMLAttributes<HTMLImageElement>) {
             <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] p-6 lg:p-8 font-[Instrument Sans]">
                 
                 {/* ✈️ Header/Navigation */}
-                <header className="w-full max-w-7xl text-sm lg:p-4">
+                <header className="w-full max-w-7xl text-sm lg:p-4 shadow-b">
                     <div className="flex items-center justify-between">
                          <img
                         {...props} 
