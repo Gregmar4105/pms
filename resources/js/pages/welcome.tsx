@@ -40,7 +40,7 @@ export default function Welcome(props: ImgHTMLAttributes<HTMLImageElement>) {
                         className="w-12"
                     />
                         {/* Brand Logo/Name */}
-                        <div className="text-2xl flex-1 ml-2 font-bold text-orange-500 tracking-wider">
+                        <div className="text-2xl flex-1 ml-2 font-bold text-orange-400 tracking-wider">
                             Passenger Management System
                         </div>
                         
