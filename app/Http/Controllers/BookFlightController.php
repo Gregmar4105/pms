@@ -37,7 +37,7 @@ class BookFlightController extends Controller
 
         // 2. Return the data to the Inertia view
         return Inertia::render('BookFlight/Index', [
-            "bookedflights" => BookFlight::all(),
+            "bookedflights" => BookFlight::paginate(15),
             // Pass the data fetched from the n8n webhook
             "flights" => $flights_from_n8n,
         ]);

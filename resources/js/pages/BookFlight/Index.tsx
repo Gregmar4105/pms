@@ -6,6 +6,7 @@ import { Head, Link, useForm, router } from '@inertiajs/react';
 import { CircleQuestionMark, UserRoundCheck, UserRoundX } from 'lucide-react';
 import CreateDialog from './Create-Dialog';
 import { Badge } from '@/components/ui/badge';
+import Pagination from '@/components/Pagination';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -158,6 +159,7 @@ export default function Index({ bookedflights, flights }) {
             )}
           </TableBody>
         </Table>
+        <Pagination links={bookedflights.links} />
       </div>
     </AppLayout>
   );
