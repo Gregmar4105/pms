@@ -5,6 +5,7 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -13,19 +14,38 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, UserCog, Album } from 'lucide-react';
+import { BookOpen, Folder, Users, UserCog, Album , 
+    ShieldUser, LayoutDashboard, UserRoundCheck, ArrowRightFromLine } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
-        icon: LayoutGrid,
+        icon: LayoutDashboard ,
     },
     {
         title: 'Booked Flights',
         href: '/booked-flights',
         icon: Album ,
+    },
+    {
+        title: 'Checked-IN',
+        href: '/checked-in',
+        icon: UserRoundCheck ,
+    },
+    {
+        title: 'Boarding',
+        href: '/boarding',
+        icon: ArrowRightFromLine ,
+    },
+];
+
+const NextNavItems: NavItem[] = [
+    {
+        title: 'Permissions',
+        href: '/permissions',
+        icon: ShieldUser ,
     },
     {
         title: 'Roles',
@@ -68,10 +88,17 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
+                <SidebarGroupLabel>General</SidebarGroupLabel>
                 <NavMain items={mainNavItems} />
             </SidebarContent>
+            
+            <SidebarContent className="flex-2">
+                <SidebarGroupLabel>System Administration</SidebarGroupLabel>
+                <NavMain items={NextNavItems}>
+                    </NavMain>
+            </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter >
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>

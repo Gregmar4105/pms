@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BookFlight;
+use App\Models\CheckedIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -57,39 +58,43 @@ class BookFlightController extends Controller
 
         $webhookUrl = env('N8N_CREATE_FLIGHT_URL');
 
-        // 1. Create role via webhook
-        try {
-            $response = Http::post($webhookUrl, [
-                Auth::id(),
-                
+       
+    }
 
-            ]);
+    public function board(Request $request)
+    {
+        // Extract nested 'data' payload
+        $data = $request->input('data');
 
-            if (!$response->successful()) {
-                return back()->withErrors(['webhook' => 'Role creation webhook failed.']);
-            }
+        // Validate only the fields needed for your create
+        $data = validator($data, [
+            'user_id' => 'required|integer',
+            'flight_number' => 'required|string',
+            'passenger_status' => 'required|string',
+            'airline_code' => 'required|string',
+            'aircraft_icao_code' => 'required|string',
+            'origin_code' => 'required|string',
+            'destination_code' => 'required|string',
+            'gate_code' => 'required|string',
+            'baggage_code' => 'nullable|string',
+        ])->validate();
 
-            $roleId = $responseRole->json('id'); // <-- extract role ID
-            
-        } catch (\Exception $e) {
-            return back()->withErrors(['webhook' => 'Could not reach role creation webhook.']);
-        }
+        // ✅ Your exact create statement
+        $checkedIn = CheckedIn::create([
+            'user_id' => $data['user_id'],
+            'flight_number' => $data['flight_number'],
+            'passenger_status' => $data['passenger_status'],
+            'airline_code' => $data['airline_code'],
+            'aircraft_code' => $data['aircraft_icao_code'],
+            'origin_code' => $data['origin_code'],
+            'destination_code' => $data['destination_code'],
+            'gate_code' => $data['gate_code'],
+            'baggage_code' => $data['baggage_code'] ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        // 2. Sync permissions using second webhook
-        try {
-            $responsePermission = Http::post($webhookUrlSyncPermission, [
-                'role_id' => $roleId,
-                'permission_ids' => $request->permissions, // <-- send array
-            ]);
-
-            if (!$responsePermission->successful()) {
-                return back()->withErrors(['webhook' => 'Permission sync webhook failed.']);
-            }
-        } catch (\Exception $e) {
-            return back()->withErrors(['webhook' => 'Could not reach permission sync webhook.']);
-        }
-
-        return redirect()->route('roles.index');
+        return redirect('/checked-in/index')->with('success', 'Passenger checked in successfully.');
     }
 
 

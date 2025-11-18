@@ -15,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({ bookedflights, flights }) {
+export default function Index({ checkedin }) {
 
     const { post } = useForm();
 
@@ -25,13 +25,10 @@ export default function Index({ bookedflights, flights }) {
       });
   }
 
-
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Booked Flights" />
       <div>
-      <CreateDialog />
       </div>
       <div
         className="mx-4 bg-white border border-gray-200 
@@ -44,43 +41,35 @@ export default function Index({ bookedflights, flights }) {
               <TableHead>ID</TableHead>
               <TableHead>Passenger</TableHead>
               <TableHead>Flight Number</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Airline Code</TableHead>
               <TableHead>Origin</TableHead>
               <TableHead>Destination</TableHead>
               <TableHead>Aircraft</TableHead>
               <TableHead>Gate</TableHead>
               <TableHead>Baggage Claim</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Departure</TableHead>
-              <TableHead>Arrival</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead>Updated At</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {bookedflights.map(({id, user_id, flight_number, airline_code, origin_code, 
-            destination_code, aircraft_icao_code, gate_code, baggage_code, status_code, scheduled_departure_time, 
+            {checkedin.map(({id, user_id, flight_number, airline_code, origin_code, 
+            destination_code, aircraft_code, gate_code, baggage_code, passenger_status, scheduled_departure_time, 
             scheduled_arrival_time, created_at_fis, updated_at_fis }) =>
               <TableRow key={id}>
                 <TableCell className="font-medium">{id}</TableCell>
                 <TableCell>{user_id}</TableCell>
                 <TableCell>{flight_number}</TableCell>
+                <TableCell>
+                  <Badge>
+                  {passenger_status}
+                  </Badge>
+                  </TableCell>
                 <TableCell>{airline_code}</TableCell>
                 <TableCell>{origin_code}</TableCell>
                 <TableCell>{destination_code}</TableCell>
-                <TableCell>{aircraft_icao_code}</TableCell>
+                <TableCell>{aircraft_code}</TableCell>
                 <TableCell>{gate_code}</TableCell>
                 <TableCell>{baggage_code}</TableCell>
-                <TableCell>
-                  <Badge>
-                  {status_code}
-                  </Badge>
-                  </TableCell>
-                <TableCell>{scheduled_departure_time}</TableCell>
-                <TableCell>{scheduled_arrival_time}</TableCell>
-                <TableCell>{created_at_fis}</TableCell>
-                <TableCell>{updated_at_fis}</TableCell>
 
                 <TableCell>
                   <Button 
