@@ -58,7 +58,7 @@ export default function Index({ bookedflights, flights }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {bookedflights.map(({id, user_id, flight_number, airline_code, origin_code, 
+            {bookedflights.data.map(({id, user_id, flight_number, airline_code, origin_code, 
             destination_code, aircraft_icao_code, gate_code, baggage_code, status_code, scheduled_departure_time, 
             scheduled_arrival_time, created_at_fis, updated_at_fis }) =>
               <TableRow key={id}>
