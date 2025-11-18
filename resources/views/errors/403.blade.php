@@ -51,7 +51,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 3px solid #38c172; 
+            border: 3px solid #ff8904; 
             box-sizing: border-box;
             opacity: 0;
             transform: scale(0.5);
@@ -69,7 +69,7 @@
             border: 0 solid transparent;
             border-right-width: 3px; 
             border-bottom-width: 3px; 
-            border-color: #38c172;
+            border-color: #ff8904;
             
             /* Key Change: Rotates 45deg, flips horizontally, and then rotates 90deg */
             transform: rotate(45deg) scaleX(-1) rotate(90deg);
