@@ -6,6 +6,7 @@ use App\Models\BookFlight;
 use App\Models\CheckedIn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
 
@@ -63,11 +64,10 @@ class BookFlightController extends Controller
 
     public function board(Request $request)
     {
-        // Extract nested 'data' payload
+        
         $data = $request->input('data');
 
-        // Validate only the fields needed for your create
-        $data = validator($data, [
+        $validatedData = validator($data, [
             'user_id' => 'required|integer',
             'flight_number' => 'required|string',
             'passenger_status' => 'required|string',
@@ -77,24 +77,35 @@ class BookFlightController extends Controller
             'destination_code' => 'required|string',
             'gate_code' => 'required|string',
             'baggage_code' => 'nullable|string',
-        ])->validate();
+        ])->validate(); 
 
-        // ✅ Your exact create statement
-        $checkedIn = CheckedIn::create([
-            'user_id' => $data['user_id'],
-            'flight_number' => $data['flight_number'],
-            'passenger_status' => $data['passenger_status'],
-            'airline_code' => $data['airline_code'],
-            'aircraft_code' => $data['aircraft_icao_code'],
-            'origin_code' => $data['origin_code'],
-            'destination_code' => $data['destination_code'],
-            'gate_code' => $data['gate_code'],
-            'baggage_code' => $data['baggage_code'] ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        DB::beginTransaction(); 
 
-        return redirect('/checked-in/index')->with('success', 'Passenger checked in successfully.');
+        try {
+            
+            $checkedIn = CheckedIn::create([
+                'user_id' => $validatedData['user_id'],
+                'flight_number' => $validatedData['flight_number'],
+                'passenger_status' => $validatedData['passenger_status'],
+                'airline_code' => $validatedData['airline_code'],
+                'aircraft_code' => $validatedData['aircraft_icao_code'],
+                'origin_code' => $validatedData['origin_code'],
+                'destination_code' => $validatedData['destination_code'],
+                'gate_code' => $validatedData['gate_code'],
+                'baggage_code' => $validatedData['baggage_code'] ?? null,
+                
+            ]);
+
+            DB::commit();
+
+            return redirect('/checked-in/index')->with('success', 'Passenger checked in successfully.');
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack(); 
+
+            return redirect()->back()->with('error', 'Failed to check in the passenger due to a server error.');
+        }
     }
 
 

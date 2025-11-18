@@ -13,7 +13,9 @@ class BoardingController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Boarding/Index');
+        return Inertia::render('Boarding/Index', [
+            'boarding' => Boarding::all(),
+        ]);
     }
 
     /**

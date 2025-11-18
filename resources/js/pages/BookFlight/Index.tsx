@@ -53,8 +53,6 @@ export default function Index({ bookedflights, flights }) {
               <TableHead>Status</TableHead>
               <TableHead>Departure</TableHead>
               <TableHead>Arrival</TableHead>
-              <TableHead>Created At</TableHead>
-              <TableHead>Updated At</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -79,8 +77,6 @@ export default function Index({ bookedflights, flights }) {
                   </TableCell>
                 <TableCell>{scheduled_departure_time}</TableCell>
                 <TableCell>{scheduled_arrival_time}</TableCell>
-                <TableCell>{created_at_fis}</TableCell>
-                <TableCell>{updated_at_fis}</TableCell>
 
                 <TableCell>
                   <Button 

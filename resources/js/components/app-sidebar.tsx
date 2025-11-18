@@ -20,11 +20,6 @@ import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutDashboard ,
-    },
-    {
         title: 'Booked Flights',
         href: '/booked-flights',
         icon: Album ,

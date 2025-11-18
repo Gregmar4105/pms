@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Button } from "@/components/ui/button";
 import { Head, Link, useForm, router } from '@inertiajs/react';
-import { CircleQuestionMark, UserRoundCheck, UserRoundX } from 'lucide-react';
+import { ArrowRightFromLine, CircleQuestionMark, UserRoundCheck, UserRoundX } from 'lucide-react';
 import CreateDialog from './Create-Dialog';
 import { Badge } from '@/components/ui/badge';
 
@@ -35,13 +35,13 @@ export default function Index({ checkedin }) {
         dark:bg-primary-foreground px-4 py-2 rounded-lg"
       >
         <Table className="w-full">
-          <TableCaption>List of Flights in the System.</TableCaption>
+          <TableCaption>List of Checked-IN Passengers in the System.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>Passenger</TableHead>
               <TableHead>Flight Number</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Passenger Status</TableHead>
               <TableHead>Airline Code</TableHead>
               <TableHead>Origin</TableHead>
               <TableHead>Destination</TableHead>
@@ -83,10 +83,9 @@ export default function Index({ checkedin }) {
                       airline_code,
                       origin_code,
                       destination_code,
-                      aircraft_icao_code,
+                      aircraft_code,
                       gate_code,
                       baggage_code,
-                      status_code,
                       scheduled_departure_time,
                       scheduled_arrival_time,
                       created_at_fis,
@@ -94,7 +93,7 @@ export default function Index({ checkedin }) {
                       passenger_status: 'Checked-IN'
                     })}
                   >
-                    <UserRoundCheck/>
+                    <ArrowRightFromLine/>
                   </Button>
 
                   <Button 

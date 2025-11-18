@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Http;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
@@ -42,8 +43,10 @@ class RoleController extends Controller
         $webhookUrlRoleName = env('N8N_CREATE_ROLE_URL');
         $webhookUrlSyncPermission = env('N8N_SYNC_PERMISSION_URL');
 
-        // 1. Create role via webhook
+        DB::beginTransaction();
+
         try {
+        
             $responseRole = Http::post($webhookUrlRoleName, [
                 'name' => $request->name,
                 'guard_name' => "web",
@@ -52,32 +55,36 @@ class RoleController extends Controller
             ]);
 
             if (!$responseRole->successful()) {
-                return back()->withErrors(['webhook' => 'Role creation webhook failed.']);
+                throw new \Exception('Role creation webhook failed.', 500);
             }
 
-            $roleId = $responseRole->json('id'); // <-- extract role ID
+            $roleId = $responseRole->json('id'); 
             
-        } catch (\Exception $e) {
-            return back()->withErrors(['webhook' => 'Could not reach role creation webhook.']);
-        }
-
-        // 2. Sync permissions using second webhook
-        try {
             $responsePermission = Http::post($webhookUrlSyncPermission, [
                 'role_id' => $roleId,
-                'permission_ids' => $request->permissions, // <-- send array
+                'permission_ids' => $request->permissions,
             ]);
 
             if (!$responsePermission->successful()) {
-                return back()->withErrors(['webhook' => 'Permission sync webhook failed.']);
+                
+                throw new \Exception('Permission sync webhook failed.', 500);
             }
-        } catch (\Exception $e) {
-            return back()->withErrors(['webhook' => 'Could not reach permission sync webhook.']);
+
+            DB::commit();
+
+            return redirect()->route('roles.index')->with('success', 'Role and permissions successfully created.');
+
+        } catch (\Throwable $e) {
+            
+            DB::rollBack();
+
+            $errorMessage = $e->getCode() == 500 
+                ? $e->getMessage() 
+                : 'A server error occurred during the process.';
+
+            return back()->withErrors(['webhook' => $errorMessage]);
         }
-
-        return redirect()->route('roles.index');
     }
-
     /**
      * Display the specified resource.
      */
