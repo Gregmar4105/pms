@@ -31,9 +31,6 @@ export default function Index({ bookedflights, flights }) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Booked Flights" />
-      <div>
-      <CreateDialog />
-      </div>
       <div
         className="mx-4 bg-white border border-gray-200 
         dark:bg-primary-foreground px-4 py-2 rounded-lg"
